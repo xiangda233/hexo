@@ -12,7 +12,7 @@ timezone: Asia/Shanghai
 
 # URL
 url: https://hexo.yuixd.top
-root: /hexo/
+root: /
 permalink: :year/:month/:day/:title/
 
 # Directory
