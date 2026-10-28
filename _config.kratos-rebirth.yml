@@ -10,7 +10,7 @@ search:
 # 图片配置
 image:
   favicon: "/images/default.webp" # 站点图标
-  avatar: "/images/avatar.jpg" # 个人信息挂件上的头像
+  avatar: "/images/avatar.jpg"
   banner:
     light: "https://dev.krt.moe/demo-assets/banner.webp"
     dark: "https://dev.krt.moe/demo-assets/banner_dark.webp"
