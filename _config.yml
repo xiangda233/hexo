@@ -11,7 +11,7 @@ language: zh-CN
 timezone: Asia/Shanghai
 
 # URL
-url: https://xiangda233.github.io/hexo
+url: https://hexo.yuixd.top
 root: /hexo/
 permalink: :year/:month/:day/:title/
 
