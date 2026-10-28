@@ -2,7 +2,7 @@
 layout: post
 title: "如何快速访问GitHub？"
 date: 2021-10-10 16:05:22
-permalink: "/2021/10/10/%e5%a6%82%e4%bd%95%e5%bf%ab%e9%80%9f%e8%ae%bf%e9%97%aegithub%ef%bc%9f/"
+permalink: "/2021/10/10/如何快速访问github？/"
 id: "18"
 tags:
   - "GitHub"

@@ -2,7 +2,7 @@
 layout: post
 title: "利用MCSManager搭建我的世界服务器"
 date: 2021-11-27 15:28:35
-permalink: "/2021/11/27/%e5%88%a9%e7%94%a8mcsmanager%e6%90%ad%e5%bb%ba%e6%88%91%e7%9a%84%e4%b8%96%e7%95%8c%e6%9c%8d%e5%8a%a1%e5%99%a8/"
+permalink: "/2021/11/27/利用mcsmanager搭建我的世界服务器/"
 id: "21"
 tags:
   - "MCSManager"

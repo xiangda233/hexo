@@ -2,7 +2,7 @@
 layout: post
 title: "白嫖微软Azure12个月教程"
 date: 2021-10-02 21:33:52
-permalink: "/2021/10/02/%e7%99%bd%e5%ab%96%e5%be%ae%e8%bd%afazure12%e4%b8%aa%e6%9c%88%e6%95%99%e7%a8%8b/"
+permalink: "/2021/10/02/白嫖微软azure12个月教程/"
 id: "15"
 tags:
   - "干货分享"

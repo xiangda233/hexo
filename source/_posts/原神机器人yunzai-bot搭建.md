@@ -2,7 +2,7 @@
 layout: post
 title: "原神机器人Yunzai Bot搭建"
 date: 2022-05-08 21:18:58
-permalink: "/2022/05/08/%e5%8e%9f%e7%a5%9e%e6%9c%ba%e5%99%a8%e4%ba%bayunzai-bot%e6%90%ad%e5%bb%ba/"
+permalink: "/2022/05/08/原神机器人yunzai-bot搭建/"
 id: "37"
 tags: []
 categories:

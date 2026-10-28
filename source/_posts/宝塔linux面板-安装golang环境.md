@@ -2,7 +2,7 @@
 layout: post
 title: "宝塔Linux面板-安装golang环境"
 date: 2021-10-06 11:15:28
-permalink: "/2021/10/06/%e5%ae%9d%e5%a1%94linux%e9%9d%a2%e6%9d%bf-%e5%ae%89%e8%a3%85golang%e7%8e%af%e5%a2%83/"
+permalink: "/2021/10/06/宝塔linux面板-安装golang环境/"
 id: "17"
 tags:
   - "go"

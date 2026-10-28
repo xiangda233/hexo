@@ -137,7 +137,12 @@ async function migrateWordPress() {
     const filename = `${safeFilename(item.slug || item.title)}.md`;
     const destinationDir = item.status === 'private' ? draftsDir : postsDir;
     const destination = path.join(destinationDir, filename);
-    const permalink = item.link ? new URL(item.link).pathname : '';
+    let permalink = item.link ? new URL(item.link).pathname : '';
+    try {
+      permalink = decodeURIComponent(permalink);
+    } catch {
+      // Keep the original path when it is not valid URI encoding.
+    }
     const body = convertShortcodes(toMarkdown(item.content || item.description));
     const markdown = `${buildFrontMatter({ ...item, date: localDate }, permalink)}\n\n${body}`;
 
