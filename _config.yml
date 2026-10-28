@@ -28,7 +28,7 @@ default_layout: post
 post_asset_folder: false
 
 # Theme
-theme: landscape
+theme: kratos-rebirth
 
 # Date / Time format
 date_format: YYYY-MM-DD
