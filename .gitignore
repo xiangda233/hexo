@@ -1,0 +1,9 @@
+node_modules/
+.pnpm-store/
+public/
+.deploy_git/
+.hexo/
+db.json
+*.log
+.DS_Store
+Thumbs.db

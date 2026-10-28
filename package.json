@@ -2,24 +2,34 @@
   "name": "my-hexo-blog",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=20"
+  },
   "hexo": {
     "version": "7.3.0"
   },
   "scripts": {
-    "build": "hexo generate"
+    "build": "node tools/run-hexo.js generate",
+    "clean": "node tools/run-hexo.js clean",
+    "migrate:wordpress": "node tools/migrate-wordpress.js",
+    "server": "node tools/run-hexo.js server",
+    "verify": "node tools/verify-site.js"
   },
   "dependencies": {
     "hexo": "7.3.0",
     "hexo-cli": "4.3.2",
     "hexo-generator-archive": "2.0.0",
     "hexo-generator-category": "2.0.0",
+    "hexo-generator-feed": "3.0.0",
     "hexo-generator-index": "3.0.0",
     "hexo-generator-tag": "2.0.0",
     "hexo-renderer-ejs": "2.0.0",
     "hexo-renderer-marked": "7.0.1",
     "hexo-renderer-stylus": "3.0.1",
     "hexo-theme-landscape": "1.0.0",
-    "hexo-theme-kratos-rebirth": "next",
-    "hexo-migrator-wordpress": "^2.1.2"
+    "hexo-theme-kratos-rebirth": "3.0.0-rc.0",
+    "hexo-migrator-wordpress": "2.1.2",
+    "turndown": "7.2.4"
   }
 }

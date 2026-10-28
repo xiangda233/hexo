@@ -26,6 +26,13 @@ category_dir: categories
 new_post_name: :title.md
 default_layout: post
 post_asset_folder: false
+default_category: 未分类
+
+# Feed
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
 
 # Theme
 theme: kratos-rebirth

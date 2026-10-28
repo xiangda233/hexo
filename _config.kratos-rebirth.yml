@@ -9,7 +9,7 @@ search:
 
 # 图片配置
 image:
-  favicon: "/assets/favicon.png" # 站点图标
+  favicon: "/images/default.webp" # 站点图标
   #avatar: "/assets/logo.webp" # 个人信息挂件上的头像
   banner:
     light: "https://dev.krt.moe/demo-assets/banner.webp"
@@ -36,11 +36,6 @@ nav:
         - label: 项目文档
           icon: book
           url: https://wiki.krt.moe
-    - label: 链接列表
-      icon: link
-      url: /linklist-example/
-      # float_right: true
-
 # Footer 页脚配置
 footer:
   links:
