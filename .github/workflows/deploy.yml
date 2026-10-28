@@ -1,5 +1,4 @@
-
-name: Deploy Hexo to GitHub Pages
+name: Deploy Hexo
 
 on:
   push:
@@ -19,6 +18,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
@@ -28,28 +28,97 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
 
-      - name: Diagnose Hexo
+      - name: Check required files
+        shell: bash
         run: |
+          set -e
+
+          if [ ! -f package.json ]; then
+            echo "::error::仓库根目录缺少 package.json"
+            exit 1
+          fi
+
+          if [ ! -f _config.yml ] && [ ! -f _config.yaml ]; then
+            echo "::error::仓库根目录缺少 Hexo 配置文件 _config.yml 或 _config.yaml"
+            exit 1
+          fi
+
+          if [ ! -f migration/wordpress-export.xml ]; then
+            echo "::error::找不到 migration/wordpress-export.xml，请检查 WordPress 导出文件是否已上传"
+            exit 1
+          fi
+
+          echo "必要文件检查通过。"
+
+      - name: Diagnose Hexo and migration plugin
+        shell: bash
+        timeout-minutes: 2
+        run: |
+          set -eux
+
           node --version
           npm --version
-          npm ls hexo hexo-cli --depth=0
-          npx hexo version
-          npx hexo help
 
-      - name: Build Hexo
+          npm ls hexo hexo-cli hexo-migrator-wordpress --depth=0
+
+          timeout 20s ./node_modules/.bin/hexo version
+
+      - name: Migrate WordPress posts
+        shell: bash
+        timeout-minutes: 3
         run: |
-          npx hexo generate
-          test -d public
-          test -f public/index.html
+          set -e
+
+          echo "开始从 WordPress XML 导入文章……"
+
+          mkdir -p source/_posts
+
+          timeout 120s ./node_modules/.bin/hexo migrate wordpress migration/wordpress-export.xml
+
+          echo "WordPress 迁移命令执行完毕。"
+
+          echo "检查生成的文章文件……"
+          find source/_posts -maxdepth 1 -type f -print
+
+          POST_COUNT=$(find source/_posts -maxdepth 1 -type f | wc -l)
+
+          if [ "$POST_COUNT" -eq 0 ]; then
+            echo "::error::迁移后 source/_posts 中没有文章，请检查 WordPress XML 文件和迁移插件。"
+            exit 1
+          fi
+
+          echo "检测到 $POST_COUNT 个文章文件。"
+
+      - name: Generate static files
+        shell: bash
+        timeout-minutes: 3
+        run: |
+          set -e
+
+          timeout 120s ./node_modules/.bin/hexo clean
+          timeout 120s ./node_modules/.bin/hexo generate
+
+          if [ ! -d public ]; then
+            echo "::error::Hexo 没有生成 public 目录"
+            exit 1
+          fi
+
+          if [ -z "$(find public -type f -print -quit)" ]; then
+            echo "::error::public 目录为空"
+            exit 1
+          fi
+
+          echo "静态网页生成成功。"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: ./public
 
   deploy:
     environment:
@@ -57,6 +126,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    timeout-minutes: 5
 
     steps:
       - name: Deploy to GitHub Pages
