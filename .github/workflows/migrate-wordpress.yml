@@ -1,5 +1,4 @@
-
-name: Migrate WordPress Articles
+name: Migrate WordPress to Markdown
 
 on:
   workflow_dispatch:
@@ -20,36 +19,153 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Check WordPress XML
+        shell: bash
         run: |
-          npm install
-          npm install --no-save hexo-migrator-wordpress
+          set -euo pipefail
 
-      - name: Prepare isolated migration directory
+          XML="migration/wordpress-export.xml"
+
+          if [ ! -s "$XML" ]; then
+            echo "::error::WordPress XML does not exist or is empty: $XML"
+            exit 1
+          fi
+
+          echo "XML file size:"
+          wc -c "$XML"
+
+          echo "WordPress item count:"
+          grep -c '<item>' "$XML" || true
+
+      - name: Create Hexo migration environment
+        shell: bash
         run: |
+          set -euo pipefail
+
           mkdir -p /tmp/hexo-migration
-          cp _config.yml /tmp/hexo-migration/
-          cp package.json /tmp/hexo-migration/
-          mkdir -p /tmp/hexo-migration/source/_posts
-          cp migration/wordpress-export.xml /tmp/wordpress-export.xml
+          cd /tmp/hexo-migration
+
+          npm init -y
+          npm install hexo hexo-migrator-wordpress
+
+          mkdir -p source/_posts
+
+          cp "$GITHUB_WORKSPACE/migration/wordpress-export.xml" \
+             /tmp/wordpress-export.xml
+
+          echo "Migration environment ready."
 
       - name: Run WordPress migration
+        shell: bash
         run: |
-          cp -r node_modules /tmp/hexo-migration/
-          cd /tmp/hexo-migration
-          npx hexo migrate wordpress /tmp/wordpress-export.xml
-          mkdir -p /tmp/migrated-posts
-          cp -r source/_posts/. /tmp/migrated-posts/
+          set -euo pipefail
 
-      - name: Package migrated Markdown
+          cd /tmp/hexo-migration
+
+          npx hexo migrate wordpress /tmp/wordpress-export.xml
+
+          echo "Generated Markdown files:"
+          find source/_posts -type f -name '*.md' -print
+
+          COUNT=$(find source/_posts -type f -name '*.md' | wc -l)
+
+          echo "Markdown count: $COUNT"
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::error::Migration completed without generating Markdown files."
+            exit 1
+          fi
+
+      - name: Package Markdown files
+        shell: bash
         run: |
+          set -euo pipefail
+
+          mkdir -p /tmp/migrated-posts
+
+          cp -r /tmp/hexo-migration/source/_posts/. \
+                /tmp/migrated-posts/
+
+          COUNT=$(find /tmp/migrated-posts -type f -name '*.md' | wc -l)
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::error::No Markdown files available for packaging."
+            exit 1
+          fi
+
           cd /tmp
           zip -r wordpress-markdown.zip migrated-posts
 
-      - name: Upload migrated Markdown
+          echo "Final ZIP:"
+          ls -lh /tmp/wordpress-markdown.zip
+
+      - name: Upload Markdown artifact
         uses: actions/upload-artifact@v4
         with:
           name: wordpress-markdown
           path: /tmp/wordpress-markdown.zip
           if-no-files-found: error
           retention-days: 7
+
+### 保存文件
+
+提交修改即可，不需要修改 WordPress XML 文件。
+
+注意：上面的配置假设你的导出文件仍然位于：
+
+```text
+migration/wordpress-export.xml
+
+如果实际路径不同，需要相应修改。
+
+---
+
+三、重新运行工作流
+
+打开仓库的 Actions 页面：
+
+"GitHub Actions 工作流" (https://github.com/xiangda233/hexo/actions?utm_source=chatgpt.com)
+
+按照以下步骤操作：
+
+1. 选择 "Migrate WordPress to Markdown"。
+2. 点击 "Run workflow"。
+3. 等待运行结束。
+4. 打开运行记录，展开 "Run WordPress migration"。
+5. 查看 "Markdown count"。
+
+正常情况下
+
+日志应该出现类似内容：
+
+Generated Markdown files:
+source/_posts/我的第一篇文章.md
+source/_posts/我的第二篇文章.md
+
+Markdown count: 2
+
+这里的 "2" 只是示例，实际数量取决于你的 WordPress 导出文件。
+
+之后，在运行记录底部下载 "wordpress-markdown" Artifact，解压 ZIP，就可以得到转换后的文章。
+
+---
+
+四、如果还是失败怎么办？
+
+如果新工作流报错，请重点看以下两种情况。
+
+情况 A：
+
+wordpress migrator plugin is not installed.
+
+说明插件仍未被 Hexo 正确识别，需要进一步检查插件版本、安装位置和 Hexo 的插件加载机制。
+
+情况 B：
+
+Migration completed without generating Markdown files.
+
+说明迁移命令没有生成文章。此时需要继续检查 XML 内容、WordPress 导出格式，以及迁移插件是否能解析你的导出文件。
+
+新工作流会在这两种情况下停止，不会再生成一个看似成功、实际为空的 ZIP。
+
+建议先按上述配置运行一次，把新的 "Run WordPress migration" 日志发给我。 我们再根据实际结果处理，重点是确保文章的标题、原始发布时间、分类和标签得到正确保留。
