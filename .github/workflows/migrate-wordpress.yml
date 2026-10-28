@@ -1,0 +1,55 @@
+
+name: Migrate WordPress Articles
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install --no-save hexo-migrator-wordpress
+
+      - name: Prepare isolated migration directory
+        run: |
+          mkdir -p /tmp/hexo-migration
+          cp _config.yml /tmp/hexo-migration/
+          cp package.json /tmp/hexo-migration/
+          mkdir -p /tmp/hexo-migration/source/_posts
+          cp migration/wordpress-export.xml /tmp/wordpress-export.xml
+
+      - name: Run WordPress migration
+        run: |
+          cp -r node_modules /tmp/hexo-migration/
+          cd /tmp/hexo-migration
+          npx hexo migrate wordpress /tmp/wordpress-export.xml
+          mkdir -p /tmp/migrated-posts
+          cp -r source/_posts/. /tmp/migrated-posts/
+
+      - name: Package migrated Markdown
+        run: |
+          cd /tmp
+          zip -r wordpress-markdown.zip migrated-posts
+
+      - name: Upload migrated Markdown
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-markdown
+          path: /tmp/wordpress-markdown.zip
+          if-no-files-found: error
+          retention-days: 7
