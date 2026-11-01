@@ -45,8 +45,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       hexo-theme-kratos-rebirth:
-        specifier: 3.0.0-rc.0
-        version: 3.0.0-rc.0
+        specifier: 3.0.1
+        version: 3.0.1
       hexo-theme-landscape:
         specifier: 1.0.0
         version: 1.0.0
@@ -602,8 +602,8 @@ packages:
     resolution: {integrity: sha512-u4s0ty9Aew6jV+a9oMrXBwhrRpUQ0U8PWM/88a5aHgDru58VY81mVrxOFxs788NAsWQ8OvsJtF5m7mnXoRnSIA==}
     engines: {node: '>=12.13.0'}
 
-  hexo-theme-kratos-rebirth@3.0.0-rc.0:
-    resolution: {integrity: sha512-k61WYZoCImTKf8X6z48HYWlTAnSWlqKCFtu4ckaMBNgjMC/+NVccKhzary8shnmHkPcL+zxPiSEeCtDvdVuVmQ==}
+  hexo-theme-kratos-rebirth@3.0.1:
+    resolution: {integrity: sha512-+6c5TKK2MK6LPhT4vgQj1h1nsvCgqW7VR6uGJ/ulzcxLCffMTUQFJB7d4PUIE+AD2LdUM9rLcCS9FqY6yusEmw==}
 
   hexo-theme-landscape@1.0.0:
     resolution: {integrity: sha512-bWQJWMqQI78wWiJPQZq5pJBH20TM442ShCaHGRetuEgMraxH0OKxB3NTupJzNEkzEk8DV2yrdizkXdKN6i501A==}
@@ -1847,7 +1847,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  hexo-theme-kratos-rebirth@3.0.0-rc.0: {}
+  hexo-theme-kratos-rebirth@3.0.1: {}
 
   hexo-theme-landscape@1.0.0: {}
 
