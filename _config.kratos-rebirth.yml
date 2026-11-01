@@ -12,8 +12,8 @@ image:
   favicon: "/images/default.webp" # 站点图标
   avatar: "/images/avatar.jpg"
   banner:
-    light: "https://dev.krt.moe/demo-assets/banner.webp"
-    dark: "https://dev.krt.moe/demo-assets/banner_dark.webp"
+    light: "/images/banner.webp"
+    dark: "/images/banner_dark.webp"
   background:
     light: "https://dev.krt.moe/demo-assets/bg.webp"
     dark: "https://dev.krt.moe/demo-assets/bg.webp"
@@ -128,7 +128,7 @@ visit_count:
 
 ################## 额外的注入代码 ##################
 additional_injections:
-  head: "" # 搜索引擎验证，或是追加的样式表
+  head: '<link rel="stylesheet" href="/css/site-custom.css">' # 移动端头图
   footer: "" # 注入到页面主体的内容，例如额外的可见组件
   after_footer: "" # 站点分析，或是追加的脚本
   tools: "" # 注入到页面右下角浮动工具栏里的功能按钮

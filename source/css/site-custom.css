@@ -1,0 +1,51 @@
+/*
+ * The upstream theme hides the hero image below 768px and turns the
+ * navigation into a hamburger menu. Keep the original navigation and
+ * restore only a compact hero image on phones.
+ */
+@media (max-width: 767px) {
+  #kratos-mobile-topnav .color-logo {
+    display: none;
+  }
+
+  #kratos-mobile-topnav .container {
+    min-height: 60px;
+  }
+
+  .kratos-start.kratos-hero-2 {
+    height: 210px !important;
+  }
+
+  .kratos-cover.kratos-cover-2.text-center {
+    display: block;
+    height: 210px;
+    padding: 0;
+  }
+
+  .kratos-cover.kratos-cover-2::before {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    content: "";
+    background: linear-gradient(
+      90deg,
+      rgba(10, 20, 38, 0.08),
+      rgba(10, 20, 38, 0.42) 50%,
+      rgba(10, 20, 38, 0.08)
+    );
+    pointer-events: none;
+  }
+
+  .kratos-cover .desc {
+    margin-top: -22px;
+  }
+
+  .kratos-cover .desc h2 {
+    margin-bottom: 0;
+    font-size: 30px;
+  }
+
+  .kratos-cover .desc span:empty {
+    display: none;
+  }
+}
