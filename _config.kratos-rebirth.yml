@@ -42,6 +42,10 @@ nav:
         - label: 项目文档
           icon: book
           url: https://wiki.krt.moe
+    - label: 个人主页
+      icon: link
+      url: https://yuixd.top
+     
 # Footer 页脚配置
 footer:
   links:
