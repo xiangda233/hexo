@@ -143,29 +143,34 @@ additional_injections:
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
     <style>
       .aplayer.aplayer-fixed { z-index: 1000; }
-      @media (max-width: 480px) {
+      /* 手机窄屏且为触摸设备；桌面、平板保持原歌词布局。 */
+      .phone-lyrics { display: none; }
+      @media (max-width: 480px) and (hover: none) and (pointer: coarse) {
         .aplayer.aplayer-fixed .aplayer-body { max-width: calc(100vw - 18px); }
-        /* 手机端：展开时歌词放到播放器上方，收起时在右侧剩余空间居中。 */
-        .aplayer.aplayer-fixed .aplayer-lrc {
-          left: 0;
-          right: 0;
-          bottom: calc(90px + env(safe-area-inset-bottom, 0px));
-          width: auto;
-          margin: 0;
-          padding: 0 8px;
-          box-sizing: border-box;
-          text-align: center;
+        .aplayer.aplayer-fixed .aplayer-lrc { visibility: hidden; }
+        .phone-lyrics {
+          display: block;
+          position: fixed;
+          inset: 0;
           pointer-events: none;
+          z-index: 1001;
         }
-        .aplayer.aplayer-fixed.aplayer-narrow .aplayer-lrc {
-          left: 84px;
-          bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-        }
-        .aplayer.aplayer-fixed .aplayer-lrc p {
+        .phone-lyrics::before, .phone-lyrics::after {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          writing-mode: vertical-rl;
+          text-orientation: upright;
+          max-height: calc(100dvh - 180px);
           overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+          font-size: 13px;
+          line-height: 22px;
+          letter-spacing: 2px;
+          color: #fff;
+          text-shadow: 0 1px 3px #000, 0 0 4px #000;
         }
+        .phone-lyrics::before { content: attr(data-left); left: max(4px, env(safe-area-inset-left)); }
+        .phone-lyrics::after { content: attr(data-right); right: max(4px, env(safe-area-inset-right)); }
       }
     </style>
   footer: |
@@ -188,4 +193,32 @@ additional_injections:
   after_footer: |
     <script defer src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>
+    <script>
+      (() => {
+        const phone = matchMedia('(max-width: 480px) and (hover: none) and (pointer: coarse)');
+        const sides = document.createElement('div');
+        sides.className = 'phone-lyrics';
+        sides.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(sides);
+        let previous = null;
+        function sync() {
+          const player = document.querySelector('.aplayer.aplayer-fixed');
+          const line = player && player.querySelector('.aplayer-lrc-current');
+          const hidden = player && player.querySelector('.aplayer-lrc-hide');
+          const text = phone.matches && !hidden && line ? line.textContent.trim() : '';
+          if (text === previous) return;
+          previous = text;
+          const chars = Array.from(text);
+          const middle = Math.ceil(chars.length / 2);
+          sides.dataset.left = chars.slice(0, middle).join('');
+          sides.dataset.right = chars.slice(middle).join('');
+        }
+        new MutationObserver(sync).observe(document.body, {
+          subtree: true, childList: true, characterData: true,
+          attributes: true, attributeFilter: ['class']
+        });
+        phone.addEventListener('change', sync);
+        sync();
+      })();
+    </script>
   tools: "" # 注入到页面右下角浮动工具栏里的功能按钮
