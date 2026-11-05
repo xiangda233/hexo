@@ -202,6 +202,47 @@ additional_injections:
         sides.setAttribute('aria-hidden', 'true');
         document.body.appendChild(sides);
         let previous = null;
+        function splitLyrics(text) {
+          const chars = typeof Intl.Segmenter === 'function'
+            ? Array.from(new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(text), part => part.segment)
+            : Array.from(text);
+          const pairs = { '(': ')', '（': '）', '[': ']', '【': '】', '「': '」', '『': '』' };
+          const closers = new Set(Object.values(pairs));
+          const stack = [];
+          const boundaries = [];
+          let groupStart = -1;
+          let translationStart = -1;
+          for (let i = 0; i < chars.length; i++) {
+            const ch = chars[i];
+            if (pairs[ch]) {
+              if (!stack.length) groupStart = i;
+              stack.push(pairs[ch]);
+            } else if (closers.has(ch)) {
+              if (stack[stack.length - 1] === ch) {
+                stack.pop();
+                if (!stack.length && i === chars.length - 1 &&
+                    (chars[groupStart] === '(' || chars[groupStart] === '（')) {
+                  translationStart = groupStart;
+                }
+              }
+            }
+            if (!stack.length && i < chars.length - 1) boundaries.push(i + 1);
+          }
+          const at = index => [
+            chars.slice(0, index).join('').trim(),
+            chars.slice(index).join('').trim()
+          ];
+          if (translationStart > 0) return at(translationStart);
+          const middle = chars.length / 2;
+          const preferred = boundaries.filter(index =>
+            /[\s,，。.!！?？;；:：、]/u.test(chars[index - 1]) || /^\s$/u.test(chars[index])
+          );
+          const nearby = preferred.filter(index => Math.abs(index - middle) <= chars.length / 4);
+          const candidates = nearby.length ? nearby : boundaries;
+          if (!candidates.length) return [text, ''];
+          candidates.sort((a, b) => Math.abs(a - middle) - Math.abs(b - middle) || a - b);
+          return at(candidates[0]);
+        }
         function sync() {
           const player = document.querySelector('.aplayer.aplayer-fixed');
           const line = player && player.querySelector('.aplayer-lrc-current');
@@ -209,10 +250,9 @@ additional_injections:
           const text = phone.matches && !hidden && line ? line.textContent.trim() : '';
           if (text === previous) return;
           previous = text;
-          const chars = Array.from(text);
-          const middle = Math.ceil(chars.length / 2);
-          sides.dataset.left = chars.slice(0, middle).join('');
-          sides.dataset.right = chars.slice(middle).join('');
+          const [left, right] = splitLyrics(text);
+          sides.dataset.left = left;
+          sides.dataset.right = right;
         }
         new MutationObserver(sync).observe(document.body, {
           subtree: true, childList: true, characterData: true,
