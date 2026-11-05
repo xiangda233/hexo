@@ -176,7 +176,7 @@ additional_injections:
   footer: |
     <!-- 网易云歌单：替换 id 即可更换歌单 -->
     <meting-js
-      api="https://api.injahow.cn/meting/?server=:server&amp;type=:type&amp;id=:id"
+      api="https://meting-api-serverless.fitchcarroll.workers.dev/api?server=:server&amp;type=:type&amp;id=:id"
       server="netease"
       type="playlist"
       id="18563412205"
