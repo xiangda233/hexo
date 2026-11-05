@@ -156,7 +156,7 @@ additional_injections:
       id="18563412205"
       fixed="true"
       mini="true"
-      autoplay="false"
+      autoplay="true"
       list-folded="true"
       order="random"
       loop="all"
