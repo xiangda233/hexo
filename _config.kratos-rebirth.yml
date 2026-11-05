@@ -150,6 +150,7 @@ additional_injections:
   footer: |
     <!-- 网易云歌单：替换 id 即可更换歌单 -->
     <meting-js
+      api="https://api.injahow.cn/meting/?server=:server&amp;type=:type&amp;id=:id"
       server="netease"
       type="playlist"
       id="18563412205"
@@ -162,7 +163,7 @@ additional_injections:
       theme="#e57393"
       preload="none"
       volume="0.5"
-      lrc-type="1"
+      lrc-type="3"
     ></meting-js>
   after_footer: |
     <script defer src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
