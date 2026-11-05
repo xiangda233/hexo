@@ -145,6 +145,27 @@ additional_injections:
       .aplayer.aplayer-fixed { z-index: 1000; }
       @media (max-width: 480px) {
         .aplayer.aplayer-fixed .aplayer-body { max-width: calc(100vw - 18px); }
+        /* 手机端：展开时歌词放到播放器上方，收起时在右侧剩余空间居中。 */
+        .aplayer.aplayer-fixed .aplayer-lrc {
+          left: 0;
+          right: 0;
+          bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+          width: auto;
+          margin: 0;
+          padding: 0 8px;
+          box-sizing: border-box;
+          text-align: center;
+          pointer-events: none;
+        }
+        .aplayer.aplayer-fixed.aplayer-narrow .aplayer-lrc {
+          left: 84px;
+          bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        }
+        .aplayer.aplayer-fixed .aplayer-lrc p {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
       }
     </style>
   footer: |
