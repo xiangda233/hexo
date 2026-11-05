@@ -143,6 +143,20 @@ additional_injections:
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
     <style>
       .aplayer.aplayer-fixed { z-index: 1000; }
+      #music-loading {
+        position: fixed; left: 0; bottom: 0; z-index: 999;
+        display: flex; align-items: center; gap: 10px;
+        max-width: calc(100vw - 18px); height: 66px;
+        padding: 0 14px 0 0; box-sizing: border-box;
+        background: #fff; color: #666; box-shadow: 0 0 8px #0002;
+        border-radius: 0 6px 0 0; font: 12px/1.5 sans-serif;
+      }
+      #music-loading[hidden] { display: none; }
+      #music-loading .music-loading-icon {
+        display: grid; place-items: center; width: 66px; height: 66px;
+        flex-shrink: 0; background: #e57393; color: white; font-size: 30px;
+      }
+
       /* 手机窄屏且为触摸设备；桌面、平板保持原歌词布局。 */
       .phone-lyrics { display: none; }
       @media (max-width: 480px) and (hover: none) and (pointer: coarse) {
@@ -174,6 +188,10 @@ additional_injections:
       }
     </style>
   footer: |
+    <div id="music-loading" role="status" aria-live="polite">
+      <span class="music-loading-icon" aria-hidden="true">♫</span>
+      <span class="music-loading-text">正在加载歌单…</span>
+    </div>
     <!-- 网易云歌单：替换 id 即可更换歌单 -->
     <!-- 想来看我的网易云主页吗，欢迎来https://music.163.com/#/user/home?id=13115793587 -->
     <meting-js
@@ -192,6 +210,28 @@ additional_injections:
       volume="0.5"
     ></meting-js>
   after_footer: |
+
+    <script>
+      (() => {
+        const placeholder = document.getElementById('music-loading');
+        if (!placeholder) return;
+        let timer;
+        const observer = new MutationObserver(ready);
+        function ready() {
+          if (!document.querySelector('meting-js .aplayer-body')) return;
+          placeholder.hidden = true;
+          clearTimeout(timer);
+          observer.disconnect();
+        }
+        observer.observe(document.body, { childList: true, subtree: true });
+        timer = setTimeout(() => {
+          if (!placeholder.hidden) {
+            placeholder.querySelector('.music-loading-text').textContent = '歌单加载较慢，请稍候…';
+          }
+        }, 12000);
+        ready();
+      })();
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>
     <script>
