@@ -138,7 +138,33 @@ visit_count:
 
 ################## 额外的注入代码 ##################
 additional_injections:
-  head: '<link rel="stylesheet" href="/css/site-custom.css">' # 移动端头图
-  footer: "" # 注入到页面主体的内容，例如额外的可见组件
-  after_footer: "" # 站点分析，或是追加的脚本
+  head: |
+    <link rel="stylesheet" href="/css/site-custom.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+    <style>
+      .aplayer.aplayer-fixed { z-index: 1000; }
+      @media (max-width: 480px) {
+        .aplayer.aplayer-fixed .aplayer-body { max-width: calc(100vw - 18px); }
+      }
+    </style>
+  footer: |
+    <!-- 网易云歌单：替换 id 即可更换歌单 -->
+    <meting-js
+      server="netease"
+      type="playlist"
+      id="18563412205"
+      fixed="true"
+      mini="true"
+      autoplay="false"
+      list-folded="true"
+      order="random"
+      loop="all"
+      theme="#e57393"
+      preload="none"
+      volume="0.5"
+      lrc-type="1"
+    ></meting-js>
+  after_footer: |
+    <script defer src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>
   tools: "" # 注入到页面右下角浮动工具栏里的功能按钮
