@@ -11,7 +11,7 @@ check_update: false
 
 # 图片配置
 image:
-  favicon: "/images/default.webp" # 站点图标
+  favicon: "/images/favicon-avatar.ico" # 站点图标
   avatar: "/images/avatar.jpg"
   banner:
     light: "/images/banner.webp"
