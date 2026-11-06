@@ -13,10 +13,11 @@ const args = [
 hexo.extend.filter.register('after_render:html', function (html) {
   if (!html.includes(marker)) return html;
   const metingTag = hexo.extend.tag.get('meting');
-  if (!metingTag || typeof metingTag.fn !== 'function') {
+  const render = typeof metingTag === 'function' ? metingTag : metingTag && metingTag.fn;
+  if (typeof render !== 'function') {
     throw new Error('hexo-tag-aplayer Meting tag is not registered');
   }
   // Run before the plugin's asset injection filter (default priority 10).
-  const player = metingTag.fn.call({ _id: 'global-music-player' }, args);
+  const player = render.call({ _id: 'global-music-player' }, args);
   return html.replace(marker, player);
 }, 1);
