@@ -63,3 +63,12 @@ tag_generator:
 # Deployment
 deploy:
   type: ''
+
+# hexo-tag-aplayer: shared player assets and Meting API
+aplayer:
+  meting: true
+  meting_api: https://blog.yuixd.top/music-api/api
+  asset_inject: true
+  cdn: https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js
+  style_cdn: https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css
+  meting_cdn: https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js
